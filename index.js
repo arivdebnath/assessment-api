@@ -5,10 +5,29 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
-app.get('/', (req, res)=>{
+const URL = process.env.URL;
+
+app.get('/convert', async (req, res)=>{
     const {fromCurrency, toCurrency, date} = req.body;
-    console.log(fromCurrency,toCurrency, date);
-    res.send('hello');
+
+    const fromData = await axios.request({
+        method: "GET",
+        url: URL + "/coins/" + fromCurrency + "/history",
+        params: {
+            date,
+        }
+    });
+    const toData = await axios.request({
+        method: "GET",
+        url: URL + "/coins/" + toCurrency + "/history",
+        params: {
+            date,
+        }
+    });
+    const fromCurrencyUSD = fromData.data.market_data.current_price.usd;
+    const toCurrencyUSD = toData.data.market_data.current_price.usd;
+    const convertedPrice = fromCurrencyUSD/toCurrencyUSD;
+    res.status(200).json({ price: convertedPrice});
 })
 
 const PORT = 3000;
