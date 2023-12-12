@@ -6,7 +6,59 @@ require('./db/mongoose');
 const app = express();
 app.use(express.json());
 
+const Coin = require("./models/coin");
+
 const URL = process.env.URL;
+
+const listFunction = async (req, res) => {
+    try {
+        const { data } = await axios.request({
+            method: "GET",
+            url: URL + "/coins/list",
+            params: {
+                include_platform: false,
+            }
+        });
+        var countone = 0;
+        var countwo = 0;
+        data.forEach(async (coinData) => {
+            const item = await Coin.findOne({
+                name: coinData.name,
+                id: coinData.id,
+            })
+            if (item) {
+                console.log(`Already there ${countone}`);
+                countone = countone + 1;
+                return;
+            }
+            else {
+                console.log(`insert ${countwo}`);
+                countwo = countwo + 1;
+                const newCoin = new Coin({
+                    name: coinData.name,
+                    id: coinData.id,
+                })
+                const savedCoin = await newCoin.save();
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+listFunction();
+
+// app.get('/list', async (req, res) => {
+//     const list = await axios.request({
+//         method: "GET",
+//         url: URL + "/coins/list",
+//         params: {
+//             include_platform: false,
+//         }
+//     });
+//     console.log(list);
+//     res.send(list.data);
+// })
 
 app.get('/convert', async (req, res) => {
     try {
@@ -30,7 +82,7 @@ app.get('/convert', async (req, res) => {
         const fromCurrencyUSD = fromData.data.market_data.current_price.usd;
         const toCurrencyUSD = toData.data.market_data.current_price.usd;
         const convertedPrice = fromCurrencyUSD / toCurrencyUSD;
-        return res.status(200).json({ 
+        return res.status(200).json({
             price: convertedPrice,
         });
     } catch (err) {
