@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios").default;
 require('dotenv').config();
+require('./db/mongoose');
 
 const app = express();
 app.use(express.json());
