@@ -29,7 +29,9 @@ app.get('/convert', async (req, res) => {
         const fromCurrencyUSD = fromData.data.market_data.current_price.usd;
         const toCurrencyUSD = toData.data.market_data.current_price.usd;
         const convertedPrice = fromCurrencyUSD / toCurrencyUSD;
-        return res.status(200).json({ price: convertedPrice });
+        return res.status(200).json({ 
+            price: convertedPrice,
+        });
     } catch (err) {
         return res.status(500).json({
             error: err,
