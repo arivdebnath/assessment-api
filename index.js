@@ -10,6 +10,7 @@ app.use(express.json());
 const Coin = require("./models/coin");
 
 const URL = process.env.URL;
+const PORT = process.env.PORT;
 
 const listFunction = async (req, res) => {
     try {
@@ -94,7 +95,6 @@ app.get('/convert', async (req, res) => {
     }
 })
 
-const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
