@@ -10,7 +10,7 @@ app.use(express.json());
 const Coin = require("./models/coin");
 
 const URL = process.env.URL;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT||3000;
 
 const listFunction = async (req, res) => {
     try {
