@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios").default;
+const schedule = require("node-schedule");
 require('dotenv').config();
 require('./db/mongoose');
 
@@ -46,7 +47,8 @@ const listFunction = async (req, res) => {
     }
 }
 
-listFunction();
+// listFunction();
+schedule.scheduleJob("0 * * * *", listFunction);
 
 // app.get('/list', async (req, res) => {
 //     const list = await axios.request({
