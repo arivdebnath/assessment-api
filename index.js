@@ -7,48 +7,14 @@ require('./db/mongoose');
 const app = express();
 app.use(express.json());
 
-const Coin = require("./models/coin");
+const { listFunction } = require("./utilities/listFunction");
 
 const URL = process.env.URL;
-const PORT = process.env.PORT||3000;
+const PORT = process.env.PORT || 3000;
 
-const listFunction = async (req, res) => {
-    try {
-        const { data } = await axios.request({
-            method: "GET",
-            url: URL + "/coins/list",
-            params: {
-                include_platform: false,
-            }
-        });
-        var countone = 0;
-        var countwo = 0;
-        data.forEach(async (coinData) => {
-            const item = await Coin.findOne({
-                name: coinData.name,
-                id: coinData.id,
-            })
-            if (item) {
-                console.log(`Already there ${countone}`);
-                countone = countone + 1;
-                return;
-            }
-            else {
-                console.log(`insert ${countwo}`);
-                countwo = countwo + 1;
-                const newCoin = new Coin({
-                    name: coinData.name,
-                    id: coinData.id,
-                })
-                const savedCoin = await newCoin.save();
-            }
-        });
-    } catch (err) {
-        console.log(err);
-    }
-}
 
-// listFunction();
+
+listFunction();
 schedule.scheduleJob("0 * * * *", listFunction);
 
 // app.get('/list', async (req, res) => {
