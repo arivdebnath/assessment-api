@@ -5,6 +5,7 @@ require('dotenv').config();
 require('./db/mongoose');
 
 const app = express();
+const router = express.Router();
 app.use(express.json());
 
 const { listFunction } = require("./utilities/listFunction");
@@ -29,7 +30,7 @@ schedule.scheduleJob("0 * * * *", listFunction);
 //     res.send(list.data);
 // })
 
-app.get('/convert', async (req, res) => {
+router.get('/convert', async (req, res) => {
     try {
         let { fromCurrency, toCurrency, date } = req.body;
         fromCurrency = fromCurrency.toLowerCase();
@@ -60,6 +61,7 @@ app.get('/convert', async (req, res) => {
         });
     }
 })
+app.use(router);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
